@@ -1,13 +1,12 @@
-name: build oses
+name: Build OSes
 on:
   workflow_dispatch:
-  schedule:
-    - cron: "0 0 * * 1"
   push:
     branches:
       - master
     paths:
       - oses/**
+
 jobs:
   push:
     name: "yolks:${{ matrix.oses }}"
@@ -20,17 +19,26 @@ jobs:
           - debian
           - ubuntu
     steps:
-      - uses: actions/checkout@v4
-      - uses: docker/setup-qemu-action@v3
-      - uses: docker/setup-buildx-action@v3
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
         with:
           buildkitd-flags: --debug
-      - uses: docker/login-action@v3
+
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@v3
         with:
           registry: ghcr.io
-          username: ${{ github.repository_owner }}
+          username: ${{ github.actor }}  # Use github.actor to get the current user
           password: ${{ secrets.REGISTRY_TOKEN }}
-      - uses: docker/build-push-action@v5
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v5
         with:
           context: ./oses/${{ matrix.oses }}
           file: ./oses/${{ matrix.oses }}/Dockerfile
