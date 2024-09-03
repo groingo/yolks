@@ -15,9 +15,7 @@ jobs:
       fail-fast: false
       matrix:
         oses:
-          - alpine
           - debian
-          - ubuntu
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
