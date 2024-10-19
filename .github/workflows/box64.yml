@@ -35,4 +35,4 @@ jobs:
           platforms: linux/arm64
           push: true
           tags: |
-            ghcr.io/groingo/yolks:${{ matrix.oses }}
+            ghcr.io/groingo/yolks:${{ matrix.tag }}
