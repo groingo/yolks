@@ -2,7 +2,7 @@ FROM        --platform=$TARGETOS/$TARGETARCH debian:bookworm-slim
 
 LABEL       author="QuintenQVD" maintainer="josdekurk@gmail.com"
 
-ENV     DEBIAN_FRONTEND noninteractive
+ENV     DEBIAN_FRONTEND=noninteractive
 
 ## Update base packages
 RUN          apt update \
@@ -21,7 +21,7 @@ RUN             mkdir -pm755 /etc/apt/keyrings
 RUN             wget -O /etc/apt/keyrings/winehq-archive.key https://dl.winehq.org/wine-builds/winehq.key
 RUN             wget -NP /etc/apt/sources.list.d/ https://dl.winehq.org/wine-builds/debian/dists/bookworm/winehq-bookworm.sources
 RUN             apt update
-RUN             apt install --install-recommends wine winehq-stable cabextract wine-binfmt wine32 wine64 -y
+RUN             apt install --install-recommends winehq-stable cabextract wine-binfmt wine32 wine64 -y
 
 RUN                wget -q -O /usr/sbin/winetricks https://raw.githubusercontent.com/Winetricks/winetricks/master/src/winetricks \
                 && chmod +x /usr/sbin/winetricks
