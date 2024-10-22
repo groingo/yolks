@@ -13,27 +13,30 @@ RUN          apt install -y libc++-dev libc6 git wget curl tar zip unzip binutil
              libfontconfig libicu72 icu-devtools libunwind8 libssl-dev sqlite3 libsqlite3-dev libmariadb-dev libmariadb-dev-compat libduktape207 locales ffmpeg gnupg2 apt-transport-https software-properties-common ca-certificates \
              libz3-dev rapidjson-dev tzdata libevent-dev libzip4 libsdl2-mixer-2.0-0 libsdl2-image-2.0-0 build-essential cmake libgdiplus libstdc++6
 			 
-RUN          dpkg --add-architecture i386 && \
-             apt update && \ 
-             apt install -y --no-install-recommends \
-                     software-properties-common \
-                     gnupg2 \
-                     apt-transport-https \
-                     ca-certificates \
-                     curl \
-                      libx11-6:i386 \
-                      libasound2:i386 \
-                      cabextract \
-                      unzip \
+RUN             dpkg --add-architecture i386 \
+                && apt update -y \
+                && apt install -y --no-install-recommends gnupg2 numactl tzdata software-properties-common libntlm0 winbind xvfb xauth python3 libncurses5:i386 libncurses6:i386 libsdl2-2.0-0 libsdl2-2.0-0:i386 unzip wine64 wine32
                       wine64 \
                       wine32
 
-# Install Wine from WineHQ (latest stable version)
-RUN wget -nc https://dl.winehq.org/wine-builds/winehq.key && \
-    apt-key add winehq.key && \
-    echo 'deb https://dl.winehq.org/wine-builds/debian/ bookworm main' | tee /etc/apt/sources.list.d/wine.list && \
-    apt-get update && \
-    apt-get install -y --install-recommends winehq-stable
+RUN             mkdir -pm755 /etc/apt/keyrings
+RUN             wget -O /etc/apt/keyrings/winehq-archive.key https://dl.winehq.org/wine-builds/winehq.key
+RUN             wget -NP /etc/apt/sources.list.d/ https://dl.winehq.org/wine-builds/debian/dists/bookworm/winehq-bookworm.sources
+RUN             apt update
+RUN             apt install --install-recommends winehq-stable cabextract wine-binfmt wine32 wine64 -y
+
+RUN                wget -q -O /usr/sbin/winetricks https://raw.githubusercontent.com/Winetricks/winetricks/master/src/winetricks \
+                && chmod +x /usr/sbin/winetricks
+
+ENV             HOME=/home/container
+ENV             WINEPREFIX=/home/container/.wine
+ENV             WINEDLLOVERRIDES="mscoree,mshtml="
+ENV             DISPLAY=:0
+ENV             DISPLAY_WIDTH=1024
+ENV             DISPLAY_HEIGHT=768
+ENV             DISPLAY_DEPTH=16
+ENV             AUTO_UPDATE=1
+ENV             XVFB=1
 
 ## Configure locale
 RUN          update-locale lang=en_US.UTF-8 \
