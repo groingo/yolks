@@ -7,7 +7,7 @@ ENV DEBIAN_FRONTEND=noninteractive
 # Update base packages and install essential dependencies
 RUN apt update && apt upgrade -y && \
     apt install -y --no-install-recommends \
-        wget curl git gnupg2 \
+        wget curl git gnupg2 ca-certificates \
         libc++-dev libc6 libfontconfig libicu72 icu-devtools \
         libunwind8 libssl-dev sqlite3 libsqlite3-dev \
         libmariadb-dev libmariadb-dev-compat libz3-dev \
