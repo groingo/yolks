@@ -12,14 +12,16 @@ RUN apt update && apt upgrade -y && \
         libunwind8 libssl-dev sqlite3 libsqlite3-dev \
         libmariadb-dev libmariadb-dev-compat libz3-dev \
         rapidjson-dev tzdata ffmpeg build-essential cmake \
-        libgdiplus libstdc++6 \
-        libc6:i386 libncurses5:i386 libncurses6:i386 \
-        libsdl1.2debian libsdl2-2.0-0 libsdl2-mixer-2.0-0 \
-        libsdl2-image-2.0-0 && \
+        libgdiplus libstdc++6 && \
     apt clean && rm -rf /var/lib/apt/lists/*
 
 # Enable i386 architecture support
 RUN dpkg --add-architecture i386 && apt update
+
+# Install essential i386 libraries if available
+RUN apt install -y --no-install-recommends \
+        libc6:i386 libncurses5:i386 libncurses6:i386 && \
+    apt clean && rm -rf /var/lib/apt/lists/* || true
 
 # Add WineHQ repository
 RUN mkdir -pm755 /etc/apt/keyrings && \
