@@ -4,6 +4,8 @@ LABEL author="QuintenQVD" maintainer="josdekurk@gmail.com"
 
 ENV DEBIAN_FRONTEND=noninteractive
 
+USER
+
 # Update base packages and install essential dependencies
 RUN apt update && apt upgrade -y && \
     apt install -y --no-install-recommends \
@@ -45,12 +47,17 @@ RUN wget -O /etc/apt/sources.list.d/box64.list https://ryanfortner.github.io/box
     apt install -y box64-rpi4arm64 && \
     apt clean && rm -rf /var/lib/apt/lists/*
 
+# Configure locale
+RUN apt update && apt install -y locales && \
+    echo "en_US.UTF-8 UTF-8" >> /etc/locale.gen && \
+    locale-gen && \
+    update-locale LANG=en_US.UTF-8
+
 # Set up user
 RUN useradd -d /home/container -m container
 USER container
 ENV USER=container HOME=/home/container
 WORKDIR /home/container
-
 # Set up Wine environment variables
 ENV WINEPREFIX=/home/container/.wine
 ENV WINEDLLOVERRIDES="mscoree,mshtml="
@@ -60,12 +67,6 @@ ENV DISPLAY_HEIGHT=768
 ENV DISPLAY_DEPTH=16
 ENV AUTO_UPDATE=1
 ENV XVFB=1
-
-# Configure locale
-RUN apt update && apt install -y locales && \
-    echo "en_US.UTF-8 UTF-8" >> /etc/locale.gen && \
-    locale-gen && \
-    update-locale LANG=en_US.UTF-8
 
 # Copy entrypoint script
 COPY ./entrypoint.sh /entrypoint.sh
