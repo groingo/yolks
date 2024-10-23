@@ -7,11 +7,11 @@ ENV DEBIAN_FRONTEND=noninteractive
 # Update base packages and install essential dependencies
 RUN apt update && apt upgrade -y && \
     apt install -y --no-install-recommends \
-        wget curl git gnupg2 ca-certificates \
+        wget curl git gnupg2 ca-certificates software-properties-common \
         libc++-dev libc6 libfontconfig libicu72 icu-devtools \
-        libunwind8 libssl-dev sqlite3 libsqlite3-dev \
+        libunwind8 libssl-dev sqlite3 libsqlite3-dev libntlm0 libsdl2-2.0-0 \
         libmariadb-dev libmariadb-dev-compat libz3-dev \
-        rapidjson-dev tzdata ffmpeg build-essential cmake \
+        rapidjson-dev numactl winbind xvfb xauth python3 tzdata ffmpeg build-essential cmake \
         libgdiplus libstdc++6 && \
     apt clean && rm -rf /var/lib/apt/lists/*
 
@@ -20,7 +20,7 @@ RUN dpkg --add-architecture i386 && apt update
 
 # Install essential i386 libraries if available
 RUN apt install -y --no-install-recommends \
-        libc6:i386 libncurses5:i386 libncurses6:i386 && \
+        libc6:i386 libncurses5:i386 libncurses6:i386 libsdl2-2.0-0:i386 && \
     apt clean && rm -rf /var/lib/apt/lists/* || true
 
 # Add WineHQ repository
