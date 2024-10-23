@@ -4,8 +4,6 @@ LABEL author="QuintenQVD" maintainer="josdekurk@gmail.com"
 
 ENV DEBIAN_FRONTEND=noninteractive
 
-USER
-
 # Update base packages and install essential dependencies
 RUN apt update && apt upgrade -y && \
     apt install -y --no-install-recommends \
